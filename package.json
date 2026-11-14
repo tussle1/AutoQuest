@@ -1,0 +1,20 @@
+{
+  "name": "discord-quest-manager",
+  "displayName": "Discord Quest Manager",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Discord Quest Manager \u2014 discover, prioritize, track and complete quests. Dark configurable overlay UI.",
+  "author": "tussle1",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "python3 -m http.server 8080 --bind 0.0.0.0",
+    "preview": "node build.mjs && python3 -m http.server 8080 --bind 0.0.0.0",
+    "test": "node test/smoke.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^26.0.0",
+    "postcss": "^8.4.0"
+  }
+}

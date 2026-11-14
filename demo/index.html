@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Discord Quest Manager — design preview</title>
+<style>
+  :root {
+    --bg: #313338; --bg-2: #2b2d31; --bg-3: #1e1f22; --ink: #dbdee1; --dim: #949ba4;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg-3); color: var(--ink);
+    font-family: "gg sans", Inter, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px; overflow: hidden;
+  }
+  .app { display: grid; grid-template-columns: 72px 240px 1fr; height: 100vh; }
+  .rail {
+    background: var(--bg-3); display: flex; flex-direction: column;
+    align-items: center; gap: 10px; padding: 12px 0;
+  }
+  .rail .srv {
+    width: 46px; height: 46px; border-radius: 16px; background: #36393f;
+    display: grid; place-items: center; font-weight: 700; color: #c9cdfb;
+    border: 1px solid #3f4147; transition: border-radius .15s, background .15s;
+  }
+  .rail .srv.active { background: linear-gradient(140deg,#5865f2,#4752c4); color: #fff; border-radius: 14px; }
+  .rail .sep { width: 30px; height: 1px; background: #3a3c43; }
+  .channels { background: var(--bg-2); padding: 12px 10px; overflow: hidden; }
+  .channels h2 { font-size: 13px; margin: 4px 6px 12px; color: #f2f3f5; }
+  .channels .grp { font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin: 14px 6px 6px; }
+  .channels a {
+    display: flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: 5px;
+    color: var(--dim); text-decoration: none; font-size: 14px;
+  }
+  .channels a:hover { background: #35373c; color: #dbdee1; }
+  .channels a.on { background: #404249; color: #fff; }
+  .channels a .badge {
+    margin-left: auto; background: #f23f43; color: #fff; font-size: 11px;
+    font-weight: 700; border-radius: 9px; padding: 0 5px;
+  }
+  main { display: flex; flex-direction: column; min-width: 0; background: var(--bg); }
+  .topbar {
+    height: 47px; flex: 0 0 47px; display: flex; align-items: center; gap: 8px;
+    padding: 0 16px; border-bottom: 1px solid #26282c; box-shadow: 0 1px 0 #26282c;
+    font-weight: 600; color: #f2f3f5;
+  }
+  .topbar .hash { color: var(--dim); font-size: 20px; }
+  .chat { padding: 20px 20px 0; overflow: hidden; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; padding-bottom: 22px; }
+  .msg { display: grid; grid-template-columns: 38px 1fr; gap: 12px; }
+  .msg .av { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(140deg,#5865f2,#eb459e); }
+  .msg .av.b { background: linear-gradient(140deg,#3ba55c,#57f287); }
+  .msg .av.c { background: linear-gradient(140deg,#faa61a,#f23f43); }
+  .msg .who { font-size: 14px; font-weight: 600; color: #f2f3f5; }
+  .msg .who time { font-size: 11px; color: var(--dim); font-weight: 400; margin-left: 6px; }
+  .msg p { margin: 2px 0 0; color: #dbdee1; line-height: 1.45; font-size: 14px; }
+  .msg p code { background: #2b2d31; padding: 1px 4px; border-radius: 3px; font-size: 12.5px; }
+  .composer {
+    margin: 0 20px 22px; height: 42px; border-radius: 8px; background: #383a40;
+    display: flex; align-items: center; padding: 0 14px; color: #6d6f78; font-size: 14px;
+  }
+  .note {
+    position: fixed; left: 16px; bottom: 16px; z-index: 10;
+    max-width: 320px; padding: 12px 14px; border-radius: 12px;
+    background: rgba(20,16,30,.86); border: 1px solid #3b3153;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 16px 40px rgba(0,0,0,.5);
+    color: #cfc9dd; font-size: 12px; line-height: 1.5;
+  }
+  .note b { color: #fff; display: block; font-size: 12.5px; margin-bottom: 3px; }
+  .note span { color: #9a93ac; }
+  .note kbd {
+    font: inherit; font-size: 10.5px; font-weight: 700; padding: 1px 5px;
+    border-radius: 4px; background: #2f2743; border: 1px solid #453a5f; color: #d8d2e6;
+  }
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .rail, .channels { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <aside class="rail">
+      <div class="srv active">DQ</div>
+      <div class="sep"></div>
+      <div class="srv">R</div>
+      <div class="srv">GP</div>
+      <div class="srv">+</div>
+    </aside>
+    <aside class="channels">
+      <h2>Quest HQ</h2>
+      <div class="grp">Text channels</div>
+      <a href="#" class="on"><span>#</span> quests <span class="badge">4</span></a>
+      <a href="#"><span>#</span> general</a>
+      <a href="#"><span>#</span> rewards</a>
+      <div class="grp">Voice</div>
+      <a href="#"><span>🔊</span> Lounge</a>
+      <a href="#"><span>🔊</span> Game night</a>
+    </aside>
+    <main>
+      <div class="topbar"><span class="hash">#</span> quests</div>
+      <div class="chat">
+        <div class="msg">
+          <span class="av"></span>
+          <div>
+            <div class="who">Mira <time>Today at 21:04</time></div>
+            <p>Rust quest is 15 minutes — I'll start it while we queue. The manager already auto-enrolled me.</p>
+          </div>
+        </div>
+        <div class="msg">
+          <span class="av b"></span>
+          <div>
+            <div class="who">Kobe <time>Today at 21:05</time></div>
+            <p>Nice, the Wakfu video one is done — claim it before it expires.</p>
+          </div>
+        </div>
+        <div class="msg">
+          <span class="av c"></span>
+          <div>
+            <div class="who">Jules <time>Today at 21:06</time></div>
+            <p>Reminder that quest progress only counts while the actual game is running. No shortcuts, `code` verified server-side.</p>
+          </div>
+        </div>
+      </div>
+      <div class="composer">Message #quests</div>
+    </main>
+  </div>
+
+  <div class="note">
+    <b>Design preview — demo data</b>
+    This page shows the exact overlay that runs on discord.com, populated with sample
+    quests. No Discord requests are made here.
+    <span>Press <kbd>G</kbd> to start monitoring · <kbd>G</kbd> again to stop · <kbd>M</kbd> to minimise.</span>
+  </div>
+
+  <script>window.__DQM_DEMO__ = true;</script>
+  <script src="../dist/discord-quest-manager.user.js"></script>
+</body>
+</html>
