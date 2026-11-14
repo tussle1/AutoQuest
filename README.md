@@ -166,6 +166,7 @@ src/
   styles.js   scoped CSS (shadow root)
   ui.js       chrome, cards, queue, stats, settings, toasts
   app.js      store, scheduler, actions, shortcuts, boot
+assets/branding/  Amethyst logo (Aller Bold wordmark + faceted gem) — see its README
 demo/         design preview page (demo data)
 test/         headless smoke test
 ```

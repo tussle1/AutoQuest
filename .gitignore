@@ -2,3 +2,9 @@ node_modules/
 package-lock.json
 *.log
 .DS_Store
+
+# Branding: source fonts are fetched locally, not redistributed
+tools/branding/*.ttf
+tools/branding/*.otf
+__pycache__/
+*.pyc
